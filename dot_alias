@@ -1,0 +1,125 @@
+alias ip="ipconfig getifaddr en0"
+
+# https://stackoverflow.com/questions/4980819/what-are-the-gcc-default-include-directories
+alias show-c-include-path="echo | gcc -xc -E -v -"
+alias show-cpp-include-path="echo | gcc -xc++ -E -v -"
+
+function gcp-info() {
+  echo "Account: $(gcloud config get account)\nProject: $(gcloud config get project)"
+}
+
+alias gcp-account="gcloud config set account "
+alias gcp-project="gcloud config set project "
+
+alias kube-contexts="kubectl config get-contexts"
+alias kube-current-context="kubectl config current-context"
+alias kube-brj="kubectl config use-context gke_baanruejai-1749_asia-southeast1-b_baanruejai"
+alias kube-local="kubectl config use-context docker-desktop"
+alias kube-nodes="kubectl get nodes"
+alias kube-pods="kubectl get pods"
+alias kube-pod-info="kubectl describe pods"
+alias kube-services="kubectl get services"
+alias kube-deployments="kubectl get deployments"
+alias kube-pods-services="kubectl get pods,services"
+alias kube-namespaces="kubectl get namespaces"
+alias kube-namespace="kubectl config view --minify --output 'jsonpath={..namespace}'"
+alias kube-set-namespace="kubectl config set-context gke_baanruejai-1749_asia-southeast1-b_baanruejai --namespace "
+alias kube-port-forward="kubectl port-forward"
+
+function kube-watch-component() {
+  kubectl get po -n "$1" -l "app.kubernetes.io/component=$2" -w
+}
+
+alias gotherdev-mysql="gcloud compute ssh tmp-mapping --project=gotherdev --zone=asia-southeast1-b -- -L 3307:10.9.224.3:3306"
+alias gotherdev-redis="gcloud compute ssh tmp-mapping --project=gotherdev --zone=asia-southeast1-b -- -L 6378:10.171.248.43:6378"
+alias traveligodev-mysql="gcloud compute ssh tmp-mapping --project=gotherdev --zone=asia-southeast1-b -- -L 6033:10.2.0.10:6033"
+alias traveligodev-redis="gcloud compute ssh tmp-mapping --project=gotherdev --zone=asia-southeast1-b -- -L 6379:61.47.87.24:6379"
+alias traveligodev-mongodb="gcloud compute ssh tmp-mapping --project=gotherdev --zone=asia-southeast1-b -- -L 27017:61.47.87.26:27017"
+alias disconnect-tmp-mapping="ps | grep -E 'tmp-mapping' | cut -d ' ' -f 1 | xargs -n 1 kill"
+
+
+alias gs="git status"
+alias gl="git log --oneline"
+
+function change() {
+  git show --name-status $1 | grep -Eo "(?:crates/)(\w|-)+" | sort | uniq
+}
+
+function pick-commit() {
+  card_id=$(echo "${1#*/}" | cut -d '-' -f 1,2)
+  echo "git cherry-pick $(git log $1 --no-merges --reverse --pretty=format:"%h" --grep "$card_id" | tr '\n' ' ')"
+}
+alias pick-commit-current="pick-commit $(git branch --show-current)"
+
+# function show-commit-before() {
+#   git checkout `git rev-list -n 1 --before="2026-02-28 23:59" preprod`
+# }
+
+function show-commit() {
+  card_id=$(echo "${1#*/}" | cut -d '-' -f 1,2)
+  echo "$(git log $1 --no-merges --reverse --pretty=format:"- %s **(%h)**" --grep "$card_id")"
+}
+alias show-commit-current="show-commit $(git branch --show-current)"
+
+alias gother-lib-example="cargo run -p gother-lib --example "
+
+function gother-api-versions() {
+  
+}
+
+function flushdb-redis() {
+  redis-cli -u redis://0.0.0.0:6379/$1 flushdb
+}
+
+# ------ LOCATION JUMPER ------
+
+GOTHER_PROJECT_ROOT="~/Documents/Work/CodeApp/gother/"
+
+alias gother="cd ${GOTHER_PROJECT_ROOT}"
+alias gother-documents="cd ${GOTHER_PROJECT_ROOT}/documents"
+alias gother-api="cd ${GOTHER_PROJECT_ROOT}/gother-api"
+alias gother-utility="cd ${GOTHER_PROJECT_ROOT}/utility"
+alias gother-notebooks="cd ${GOTHER_PROJECT_ROOT}/notebooks"
+
+
+# ------ DEFINED FUNCTION ------
+
+function string_length() {
+  echo "${#1}"
+}
+
+levenshtein () {
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: levenshtein <string1> <string2>"
+        return 1
+    fi
+
+    local s1="$1" s2="$2"
+    local len1=${s1} len2=${#s2}
+    local i j c1 c2
+    local -a d
+
+    for ((i=0; i<=len1; i++)); do d[$i,0]=$i; done
+    for ((j=0; j<=len2; j++)); do d[0,$j]=$j; done
+
+    for ((i=1; i<=len1; i++)); do
+        c1=${s1:i-1:1}
+        for ((j=1; j<=len2; j++)); do
+            c2=${s2:j-1:1}
+            if [ "$c1" == "$c2" ]; then
+                d[$i,$j]=${d[$i-1,$j-1]}
+            else
+                local sub=${d[$i-1,$j-1]}
+                local ins=${d[$i,$j-1]}
+                local del=${d[$i-1,$j]}
+                local min=$sub
+                if [ $ins -lt $min ]; then min=$ins; fi
+                if [ $del -lt $min ]; then min=$del; fi
+                d[$i,$j]=$((min+1))
+            fi
+        done
+    done
+    echo ${d[$len1,$len2]}
+}
+
+echo "Command Aliases Initlitalized"

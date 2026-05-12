@@ -1,0 +1,47 @@
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="/opt/homebrew/opt/rustup/bin:$PATH"
+
+export PATH="$HOME/.jenv/bin:$PATH"
+export PATH="$HOME/.cache/rebar3/bin:$PATH"
+
+export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
+
+export PATH="/usr/local/smlnj/bin:$PATH"
+export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+
+export PATH="/opt/homebrew/opt/mysql-client@8.4/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/mysql-client@8.4/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/mysql-client@8.4/include"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/mysql-client@8.4/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+export CPATH="/opt/homebrew/include"
+export LIBRARY_PATH="/opt/homebrew/lib"
+
+# export PATH="/usr/local/opt/libpq/bin:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/libpq/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+export PATH="$HOME/Library/Application Support/Coursier/bin:$PATH"
+
+export PATH="$PATH":"$HOME/.pub-cache/bin"
+
+export GOPATH="$HOME/.go"
+export PATH="$GOPATH:$GOPATH/bin:$PATH"
+
+alias reload="exec $SHELL -l"
+
+alias glb="git log --graph --abbrev-commit --decorate --format=format:'#%C(bold yellow)%h%C(reset) - %C(white)%ar%C(reset) %C(auto)%d%C(reset)%n''%n      %C(white)%s%C(reset)%n''%n%C(bright blue) %cn%C(reset) %C(dim green)<%ce>%C(reset)%n'"
+alias glgg="git log --oneline --reverse  --no-merges --pretty=format:'%s (%h)%n'"
+
+alias ssh-takdanai="ssh-add -D; ssh-add -K '$HOME/.ssh/takdanai-personal'"
+alias ssh-takdanai-code-app="ssh-add -D; ssh-add -K '$HOME/.ssh/takdanai-code-app'"
+alias ssh-developer-code-app="ssh-add -D; ssh-add -K '$HOME/.ssh/developer-code-app'"
+
+alias brew-x86='eval "$(/usr/local/bin/brew shellenv)"'
+alias brew-arm64='eval "$(/opt/homebrew/bin/brew shellenv)"'
+
+alias arch-x86='arch -x86_64 $SHELL'
+alias arch-arm64='arch -arm64 $SHELL'
